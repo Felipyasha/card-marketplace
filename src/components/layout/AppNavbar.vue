@@ -22,7 +22,7 @@ function closeMenu() {
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 bg-[#2a2a2a] border-b border-[#3a3a3a] shadow-sm">
+  <header class="sticky top-0 z-50 bg-zinc-800 border-b border-zinc-700 shadow-sm">
     <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
       <!-- Brand -->
@@ -34,8 +34,8 @@ function closeMenu() {
       <div class="hidden md:flex items-center gap-1 flex-1 ml-6">
         <RouterLink
           to="/"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-          active-class="text-[#c85e2a] bg-[#3a3a3a]"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+          active-class="text-orange-500 bg-zinc-700"
           @click="closeMenu"
         >
           <Store :size="16" />
@@ -45,8 +45,8 @@ function closeMenu() {
         <template v-if="auth.isAuthenticated">
           <RouterLink
             to="/my-cards"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-            active-class="text-[#c85e2a] bg-[#3a3a3a]"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+            active-class="text-orange-500 bg-zinc-700"
             @click="closeMenu"
           >
             <Layers :size="16" />
@@ -55,8 +55,8 @@ function closeMenu() {
 
           <RouterLink
             to="/trades/new"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-            active-class="text-[#c85e2a] bg-[#3a3a3a]"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+            active-class="text-orange-500 bg-zinc-700"
             @click="closeMenu"
           >
             <Repeat2 :size="16" />
@@ -68,12 +68,12 @@ function closeMenu() {
       <!-- Auth desktop -->
       <div class="hidden md:flex items-center gap-3 shrink-0">
         <template v-if="auth.isAuthenticated">
-          <span class="font-display font-bold text-base tracking-wide text-white max-w-[120px] truncate">
+          <span class="font-display font-bold text-base tracking-wide text-white max-w-30 truncate">
             {{ auth.user?.name }}
           </span>
           <button
             @click="handleLogout"
-            class="flex items-center justify-center w-8 h-8 rounded border border-[#3a3a3a] text-[#b0b0b0] hover:text-red-400 hover:border-red-400/50 hover:bg-red-400/10 transition-all"
+            class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-red-400 hover:border-red-400 hover:bg-red-400/10 transition-all"
           >
             <LogOut :size="15" />
           </button>
@@ -82,13 +82,13 @@ function closeMenu() {
         <template v-else>
           <RouterLink
             to="/login"
-            class="font-display font-bold text-base tracking-wider text-[#b0b0b0] hover:text-white transition-colors"
+            class="font-display font-bold text-base tracking-wider text-zinc-400 hover:text-white transition-colors"
           >
             Entrar
           </RouterLink>
           <RouterLink
             to="/register"
-            class="font-display font-bold text-base tracking-wider bg-[#c85e2a] text-white px-4 py-1.5 rounded hover:bg-[#e06830] transition-colors"
+            class="font-display font-bold text-base tracking-wider bg-orange-600 text-white px-4 py-1.5 rounded hover:bg-orange-500 transition-colors"
           >
             Registrar
           </RouterLink>
@@ -97,7 +97,7 @@ function closeMenu() {
 
       <!-- Botão hamburguer mobile -->
       <button
-        class="md:hidden flex items-center justify-center w-9 h-9 rounded border border-[#3a3a3a] text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
+        class="md:hidden flex items-center justify-center w-9 h-9 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
         @click="menuOpen = !menuOpen"
       >
         <X v-if="menuOpen" :size="18" />
@@ -109,12 +109,12 @@ function closeMenu() {
     <!-- Menu mobile -->
     <div
       v-if="menuOpen"
-      class="md:hidden border-t border-[#3a3a3a] bg-[#2a2a2a] px-6 py-4 flex flex-col gap-2"
+      class="md:hidden border-t border-zinc-700 bg-zinc-800 px-6 py-4 flex flex-col gap-2"
     >
       <RouterLink
         to="/"
-        class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-        active-class="text-[#c85e2a] bg-[#3a3a3a]"
+        class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+        active-class="text-orange-500 bg-zinc-700"
         @click="closeMenu"
       >
         <Store :size="16" />
@@ -124,8 +124,8 @@ function closeMenu() {
       <template v-if="auth.isAuthenticated">
         <RouterLink
           to="/my-cards"
-          class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-          active-class="text-[#c85e2a] bg-[#3a3a3a]"
+          class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+          active-class="text-orange-500 bg-zinc-700"
           @click="closeMenu"
         >
           <Layers :size="16" />
@@ -134,21 +134,21 @@ function closeMenu() {
 
         <RouterLink
           to="/trades/new"
-          class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a] transition-all"
-          active-class="text-[#c85e2a] bg-[#3a3a3a]"
+          class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+          active-class="text-orange-500 bg-zinc-700"
           @click="closeMenu"
         >
           <Repeat2 :size="16" />
           Nova Troca
         </RouterLink>
 
-        <div class="border-t border-[#3a3a3a] mt-2 pt-3 flex items-center justify-between">
+        <div class="border-t border-zinc-700 mt-2 pt-3 flex items-center justify-between">
           <span class="font-display font-bold text-base text-white truncate">
             {{ auth.user?.name }}
           </span>
           <button
             @click="handleLogout"
-            class="flex items-center gap-1.5 text-base font-bold text-[#b0b0b0] hover:text-red-400 transition-colors"
+            class="flex items-center gap-1.5 text-base font-bold text-zinc-400 hover:text-red-400 transition-colors"
           >
             <LogOut :size="15" />
             Sair
@@ -157,17 +157,17 @@ function closeMenu() {
       </template>
 
       <template v-else>
-        <div class="border-t border-[#3a3a3a] mt-2 pt-3 flex flex-col gap-2">
+        <div class="border-t border-zinc-700 mt-2 pt-3 flex flex-col gap-2">
           <RouterLink
             to="/login"
-            class="text-center font-display font-bold text-base tracking-wider text-[#b0b0b0] border border-[#3a3a3a] px-4 py-2 rounded hover:text-white hover:bg-[#3a3a3a] transition-all"
+            class="text-center font-display font-bold text-base tracking-wider text-zinc-400 border border-zinc-700 px-4 py-2 rounded hover:text-white hover:bg-zinc-700 transition-all"
             @click="closeMenu"
           >
             Entrar
           </RouterLink>
           <RouterLink
             to="/register"
-            class="text-center font-display font-bold text-base tracking-wider bg-[#c85e2a] text-white px-4 py-2 rounded hover:bg-[#e06830] transition-colors"
+            class="text-center font-display font-bold text-base tracking-wider bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-500 transition-colors"
             @click="closeMenu"
           >
             Registrar
