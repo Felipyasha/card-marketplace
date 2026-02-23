@@ -7,6 +7,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('@/components/layout/AppLayout.vue'),
+      /*
       children: [
         {
           path: '',
@@ -36,6 +37,7 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
       ],
+      */
     },
     {
       path: '/:pathMatch(.*)*',
