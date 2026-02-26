@@ -1,59 +1,66 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { cardsApi } from '@/api/cards'
-import type { Card } from '@/types'
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import { cardsApi } from "@/api/cards";
+import type { Card } from "@/types";
+import { CACHE_TTL } from "@/config";
 
-const CACHE_TTL = 60_000 // 1 minuto
+export const useCardsStore = defineStore("cards", () => {
+    const allCards = ref<Card[]>([]);
+    const allCardsPage = ref(1);
+    const allCardsMore = ref(false);
+    const allCardsLoading = ref(false);
 
-export const useCardsStore = defineStore('cards', () => {
-  const allCards = ref<Card[]>([])
-  const allCardsPage = ref(1)
-  const allCardsMore = ref(false)
-  const allCardsLoading = ref(false)
+    const myCards = ref<Card[]>([]);
+    const myCardsLoading = ref(false);
 
-  const myCards = ref<Card[]>([])
-  const myCardsLoading = ref(false)
+    const cache = ref<Record<number, number>>({});
 
-  const cache = ref<Record<number, number>>({})
+    async function fetchAllCards(page = 1, force = false) {
+        const cached = cache.value[page];
+        if (!force && cached && Date.now() - cached < CACHE_TTL) return;
 
-  async function fetchAllCards(page = 1, force = false) {
-    const cached = cache.value[page]
-    if (!force && cached && Date.now() - cached < CACHE_TTL) return
-
-    allCardsLoading.value = true
-    try {
-      const data = await cardsApi.getAll(page)
-      allCards.value = page === 1 ? data.list : [...allCards.value, ...data.list]
-      allCardsPage.value = page
-      allCardsMore.value = data.more
-      cache.value[page] = Date.now()
-    } finally {
-      allCardsLoading.value = false
+        allCardsLoading.value = true;
+        try {
+            const data = await cardsApi.getAll(page);
+            allCards.value =
+                page === 1 ? data.list : [...allCards.value, ...data.list];
+            allCardsPage.value = page;
+            allCardsMore.value = data.more;
+            cache.value[page] = Date.now();
+        } finally {
+            allCardsLoading.value = false;
+        }
     }
-  }
 
-  async function fetchMoreCards() {
-    if (!allCardsMore.value || allCardsLoading.value) return
-    await fetchAllCards(allCardsPage.value + 1)
-  }
-
-  async function fetchMyCards() {
-    myCardsLoading.value = true
-    try {
-      myCards.value = await cardsApi.getMyCards()
-    } finally {
-      myCardsLoading.value = false
+    async function fetchMoreCards() {
+        if (!allCardsMore.value || allCardsLoading.value) return;
+        await fetchAllCards(allCardsPage.value + 1);
     }
-  }
 
-  async function addCardsToMyCollection(cardIds: string[]) {
-    await cardsApi.addToMyCards({ cardIds })
-    await fetchMyCards()
-  }
+    async function fetchMyCards() {
+        myCardsLoading.value = true;
+        try {
+            myCards.value = await cardsApi.getMyCards();
+        } finally {
+            myCardsLoading.value = false;
+        }
+    }
 
-  return {
-    allCards, allCardsPage, allCardsMore, allCardsLoading,
-    myCards, myCardsLoading,
-    fetchAllCards, fetchMoreCards, fetchMyCards, addCardsToMyCollection,
-  }
-})
+    async function addCardsToMyCollection(cardIds: string[]) {
+        await cardsApi.addToMyCards({ cardIds });
+        await fetchMyCards();
+    }
+
+    return {
+        allCards,
+        allCardsPage,
+        allCardsMore,
+        allCardsLoading,
+        myCards,
+        myCardsLoading,
+        fetchAllCards,
+        fetchMoreCards,
+        fetchMyCards,
+        addCardsToMyCollection,
+    };
+});

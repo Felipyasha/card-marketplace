@@ -19,7 +19,7 @@ onMounted(() => {
       <RouterView />
     </main>
     <footer class="border-t border-zinc-700 bg-zinc-800 py-6 text-center font-display font-bold text-base tracking-widest text-zinc-300 ">
-      Trocarta © 2024 — Troque com honra
+      Trocarta © 2026 — Troque com honra
     </footer>
   </div>
 </template>

@@ -2,10 +2,11 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authApi } from '@/api/auth'
 import type { User } from '@/types'
+import { TOKEN_KEY } from '@/config'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
-  const token = ref<string | null>(localStorage.getItem('cv_token'))
+  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
   const isLoading = ref(false)
 
   const isAuthenticated = computed(() => !!token.value)
@@ -16,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await authApi.login({ email, password })
       token.value = data.token
       user.value = data.user
-      localStorage.setItem('cv_token', data.token)
+      localStorage.setItem(TOKEN_KEY, data.token)
     } finally {
       isLoading.value = false
     }
@@ -35,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     user.value = null
     token.value = null
-    localStorage.removeItem('cv_token')
+    localStorage.removeItem(TOKEN_KEY)
   }
 
   async function refreshUser() {
