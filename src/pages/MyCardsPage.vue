@@ -5,12 +5,14 @@ import { toast } from 'vue-sonner'
 import { Search, Plus, Layers, PackageOpen, SearchX } from 'lucide-vue-next'
 import AppButton from '@/components/ui/AppButton.vue'
 import CardTile from '@/components/cards/CardTile.vue'
+import { useDebounce } from '@/composables/useDebounce'
 
 type Tab = 'collection' | 'browse'
 
 const cardsStore = useCardsStore()
 const tab = ref<Tab>('collection')
 const search = ref('')
+const debouncedSearch = useDebounce(search, 300)
 const selectedToAdd = ref<Set<string>>(new Set())
 const adding = ref(false)
 
@@ -27,7 +29,7 @@ const myCardIds = computed(() => new Set(cardsStore.myCards.map(c => c.id)))
 
 const filteredMyCards = computed(() =>
   cardsStore.myCards.filter(c =>
-    c.name.toLowerCase().includes(search.value.toLowerCase())
+    c.name.toLowerCase().includes(debouncedSearch.value.toLowerCase())
   )
 )
 
@@ -37,7 +39,7 @@ const availableCards = computed(() =>
 
 const filteredAllCards = computed(() =>
   availableCards.value.filter(c =>
-    c.name.toLowerCase().includes(search.value.toLowerCase())
+    c.name.toLowerCase().includes(debouncedSearch.value.toLowerCase())
   )
 )
 

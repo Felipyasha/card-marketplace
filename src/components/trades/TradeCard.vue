@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ChevronDown, ChevronUp, Trash2, Repeat2 } from 'lucide-vue-next'
@@ -8,6 +8,7 @@ import { useTradesStore } from '@/stores/trades'
 import { toast } from 'vue-sonner'
 import type { Trade } from '@/types'
 import AppButton from '@/components/ui/AppButton.vue'
+import AppConfirmModal from '@/components/ui/AppConfirmModal.vue'
 
 const props = defineProps<{ trade: Trade }>()
 
@@ -17,13 +18,13 @@ const tradesStore = useTradesStore()
 const expanded = ref(false)
 const deleting = ref(false)
 
-const isOwner = props.trade.userId === auth.user?.id
+const isOwner = computed(() => props.trade.userId === auth.user?.id)
+const offering = computed(() => props.trade.tradeCards.filter(tc => tc.type === 'OFFERING'))
+const receiving = computed(() => props.trade.tradeCards.filter(tc => tc.type === 'RECEIVING'))
 
-const offering = props.trade.tradeCards.filter(tc => tc.type === 'OFFERING')
-const receiving = props.trade.tradeCards.filter(tc => tc.type === 'RECEIVING')
+const showConfirm = ref(false)
 
 async function handleDelete() {
-  if (!confirm('Deseja deletar esta troca?')) return
   deleting.value = true
   try {
     await tradesStore.deleteTrade(props.trade.id)
@@ -32,6 +33,7 @@ async function handleDelete() {
     toast.error('Erro ao deletar a troca')
   } finally {
     deleting.value = false
+    showConfirm.value = false
   }
 }
 </script>
@@ -51,20 +53,12 @@ async function handleDelete() {
       </div>
 
       <div class="flex items-center gap-2">
-        <AppButton
-          v-if="isOwner"
-          variant="danger"
-          size="sm"
-          :loading="deleting"
-          @click="handleDelete"
-        >
+        <AppButton v-if="isOwner" variant="danger" size="sm" @click="showConfirm = true">
           <Trash2 :size="14" />
         </AppButton>
 
-        <button
-          @click="expanded = !expanded"
-          class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
-        >
+        <button @click="expanded = !expanded"
+          class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">
           <ChevronUp v-if="expanded" :size="16" />
           <ChevronDown v-else :size="16" />
         </button>
@@ -80,14 +74,9 @@ async function handleDelete() {
           Oferece
         </span>
         <div class="flex items-center">
-          <img
-            v-for="tc in offering.slice(0, 4)"
-            :key="tc.id"
-            :src="tc.card.imageUrl"
-            :alt="tc.card.name"
+          <img v-for="tc in offering.slice(0, 4)" :key="tc.id" :src="tc.card.imageUrl" :alt="tc.card.name"
             :title="tc.card.name"
-            class="w-10 h-14 object-cover rounded border border-zinc-700 -ml-2 first:ml-0 hover:-translate-y-1 transition-transform"
-          />
+            class="w-10 h-14 object-cover rounded border border-zinc-700 -ml-2 first:ml-0 hover:-translate-y-1 transition-transform" />
           <span v-if="offering.length > 4" class="text-zinc-500 text-sm ml-2">
             +{{ offering.length - 4 }}
           </span>
@@ -103,14 +92,9 @@ async function handleDelete() {
           Quer
         </span>
         <div class="flex items-center">
-          <img
-            v-for="tc in receiving.slice(0, 4)"
-            :key="tc.id"
-            :src="tc.card.imageUrl"
-            :alt="tc.card.name"
+          <img v-for="tc in receiving.slice(0, 4)" :key="tc.id" :src="tc.card.imageUrl" :alt="tc.card.name"
             :title="tc.card.name"
-            class="w-10 h-14 object-cover rounded border border-zinc-700 -ml-2 first:ml-0 hover:-translate-y-1 transition-transform"
-          />
+            class="w-10 h-14 object-cover rounded border border-zinc-700 -ml-2 first:ml-0 hover:-translate-y-1 transition-transform" />
           <span v-if="receiving.length > 4" class="text-zinc-500 text-sm ml-2">
             +{{ receiving.length - 4 }}
           </span>
@@ -128,11 +112,7 @@ async function handleDelete() {
         </h4>
         <div class="grid grid-cols-3 gap-2">
           <div v-for="tc in offering" :key="tc.id" class="flex flex-col gap-1">
-            <img
-              :src="tc.card.imageUrl"
-              :alt="tc.card.name"
-              class="w-full aspect-3/4 object-contain"
-            />
+            <img :src="tc.card.imageUrl" :alt="tc.card.name" class="w-full aspect-3/4 object-contain" />
             <span class="text-xs text-zinc-500 text-center truncate">{{ tc.card.name }}</span>
           </div>
         </div>
@@ -144,17 +124,17 @@ async function handleDelete() {
         </h4>
         <div class="grid grid-cols-3 gap-2">
           <div v-for="tc in receiving" :key="tc.id" class="flex flex-col gap-1">
-            <img
-              :src="tc.card.imageUrl"
-              :alt="tc.card.name"
-              class="w-full aspect-3/4 object-contain"
-            />
+            <img :src="tc.card.imageUrl" :alt="tc.card.name" class="w-full aspect-3/4 object-contain" />
             <span class="text-xs text-zinc-500 text-center truncate">{{ tc.card.name }}</span>
           </div>
         </div>
       </div>
 
     </div>
+
+    <AppConfirmModal v-if="showConfirm" title="Deletar Troca"
+      message="Tem certeza que deseja deletar esta troca? Essa ação não pode ser desfeita." confirmLabel="Deletar"
+      :loading="deleting" @confirm="handleDelete" @cancel="showConfirm = false" />
 
   </div>
 </template>

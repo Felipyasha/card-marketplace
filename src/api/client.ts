@@ -1,32 +1,39 @@
 import axios from 'axios'
+import { TOKEN_KEY } from '@/config'
 
-const BASE_URL = 'https://cards-marketplace-api.onrender.com'
+export class ApiError extends Error {
+  status: number
+  payload?: unknown
 
-export const api = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  constructor(message: string, status: number, payload?: unknown) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.payload = payload
+  }
+}
+
+const client = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Anexa o JWT em toda requisição automaticamente
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('cv_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
-// Normaliza mensagens de erro
-api.interceptors.response.use(
-  (res) => res,
+client.interceptors.response.use(
+  (response) => response,
   (error) => {
+    const status = error.response?.status ?? 0
     const message =
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      error?.message ||
-      'Ocorreu um erro inesperado.'
-    return Promise.reject(new Error(message))
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      'Erro inesperado'
+    throw new ApiError(message, status, error.response?.data)
   }
 )
+
+export default client
