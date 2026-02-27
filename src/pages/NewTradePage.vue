@@ -84,12 +84,10 @@ async function handleSubmit() {
 <template>
   <div>
 
-    <!-- Header -->
+
     <div class="flex items-center gap-4 mb-8">
-      <button
-        @click="router.back()"
-        class="flex items-center justify-center w-9 h-9 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
-      >
+      <button @click="router.back()"
+        class="flex items-center justify-center w-9 h-9 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">
         <ChevronLeft :size="18" />
       </button>
       <div class="flex items-center gap-3">
@@ -103,26 +101,22 @@ async function handleSubmit() {
       </div>
     </div>
 
-    <!-- Stepper -->
+
     <div class="flex items-center gap-2 mb-8">
-      <div
-        v-for="s in [1, 2, 3]"
-        :key="s"
-        class="flex items-center gap-2"
-      >
+      <div v-for="s in [1, 2, 3]" :key="s" class="flex items-center gap-2">
         <div :class="[
           'flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-sm transition-all',
           step === s ? 'bg-orange-600 text-white' :
-          step > s  ? 'bg-green-600 text-white' :
-                      'bg-zinc-700 text-zinc-400'
+            step > s ? 'bg-green-600 text-white' :
+              'bg-zinc-700 text-zinc-400'
         ]">
           {{ step > s ? '✓' : s }}
         </div>
         <span :class="[
           'font-display font-bold text-sm tracking-wider hidden sm:block',
           step === s ? 'text-white' :
-          step > s  ? 'text-green-500' :
-                      'text-zinc-500'
+            step > s ? 'text-green-500' :
+              'text-zinc-500'
         ]">
           {{ s === 1 ? 'Oferecer' : s === 2 ? 'Receber' : 'Revisar' }}
         </span>
@@ -130,7 +124,7 @@ async function handleSubmit() {
       </div>
     </div>
 
-    <!-- Step 1: Cartas para oferecer -->
+
     <div v-if="step === 1">
       <div class="mb-6">
         <h2 class="font-display font-bold text-xl text-white mb-1">
@@ -142,53 +136,38 @@ async function handleSubmit() {
         <p class="text-zinc-400">Selecione cartas da sua coleção</p>
       </div>
 
-      <!-- Search -->
+
       <div class="relative mb-6">
         <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-        <input
-          v-model="searchMy"
-          type="text"
-          placeholder="Buscar nas minhas cartas..."
-          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all"
-        />
+        <input v-model="searchMy" type="text" placeholder="Buscar nas minhas cartas..."
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
       </div>
 
-      <!-- Loading -->
+
       <div v-if="cardsStore.myCardsLoading" class="flex justify-center py-24">
         <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
       </div>
 
-      <!-- Vazio -->
+
       <div v-else-if="filteredMyCards.length === 0" class="flex flex-col items-center py-24 gap-4">
         <span class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</span>
       </div>
 
-      <!-- Grid -->
+
       <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-8">
-        <CardTile
-          v-for="card in filteredMyCards"
-          :key="card.id"
-          :card="card"
-          :selectable="true"
-          :selected="offering.has(card.id)"
-          @select="toggleOffering(card.id)"
-        />
+        <CardTile v-for="card in filteredMyCards" :key="card.id" :card="card" :selectable="true"
+          :selected="offering.has(card.id)" @select="toggleOffering(card.id)" />
       </div>
 
       <div class="flex justify-end pt-4 border-t border-zinc-700">
-        <AppButton
-          variant="primary"
-          size="lg"
-          :disabled="offering.size === 0"
-          @click="step = 2"
-        >
+        <AppButton variant="primary" size="lg" :disabled="offering.size === 0" @click="step = 2">
           Próximo
           <ArrowRight :size="16" />
         </AppButton>
       </div>
     </div>
 
-    <!-- Step 2: Cartas para receber -->
+
     <div v-if="step === 2">
       <div class="mb-6">
         <h2 class="font-display font-bold text-xl text-white mb-1">
@@ -200,40 +179,25 @@ async function handleSubmit() {
         <p class="text-zinc-400">Selecione cartas disponíveis no sistema</p>
       </div>
 
-      <!-- Search -->
       <div class="relative mb-6">
         <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-        <input
-          v-model="searchAll"
-          type="text"
-          placeholder="Buscar cartas..."
-          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all"
-        />
+        <input v-model="searchAll" type="text" placeholder="Buscar cartas..."
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
       </div>
 
-      <!-- Loading -->
       <div v-if="cardsStore.allCardsLoading && cardsStore.allCards.length === 0" class="flex justify-center py-24">
         <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
       </div>
 
-      <!-- Vazio -->
       <div v-else-if="filteredAllCards.length === 0" class="flex flex-col items-center py-24 gap-4">
         <span class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</span>
       </div>
 
-      <!-- Grid -->
       <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-8">
-        <CardTile
-          v-for="card in filteredAllCards"
-          :key="card.id"
-          :card="card"
-          :selectable="true"
-          :selected="receiving.has(card.id)"
-          @select="toggleReceiving(card.id)"
-        />
+        <CardTile v-for="card in filteredAllCards" :key="card.id" :card="card" :selectable="true"
+          :selected="receiving.has(card.id)" @select="toggleReceiving(card.id)" />
       </div>
 
-      <!-- Load more -->
       <div v-if="cardsStore.allCardsMore" class="flex justify-center mb-6">
         <AppButton variant="ghost" :loading="cardsStore.allCardsLoading" @click="cardsStore.fetchMoreCards()">
           Carregar mais
@@ -245,19 +209,13 @@ async function handleSubmit() {
           <ChevronLeft :size="16" />
           Voltar
         </AppButton>
-        <AppButton
-          variant="primary"
-          size="lg"
-          :disabled="receiving.size === 0"
-          @click="step = 3"
-        >
+        <AppButton variant="primary" size="lg" :disabled="receiving.size === 0" @click="step = 3">
           Revisar
           <ArrowRight :size="16" />
         </AppButton>
       </div>
     </div>
 
-    <!-- Step 3: Revisar -->
     <div v-if="step === 3">
       <div class="mb-6">
         <h2 class="font-display font-bold text-xl text-white mb-1">Revisar Troca</h2>
@@ -266,31 +224,22 @@ async function handleSubmit() {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-        <!-- Oferecendo -->
         <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-5">
           <h3 class="font-display font-bold text-sm uppercase tracking-widest text-green-500 mb-4">
             Você oferece ({{ offering.size }})
           </h3>
           <div class="grid grid-cols-3 gap-3">
-            <CardTile
-              v-for="card in cardsStore.myCards.filter(c => offering.has(c.id))"
-              :key="card.id"
-              :card="card"
-            />
+            <CardTile v-for="card in cardsStore.myCards.filter(c => offering.has(c.id))" :key="card.id" :card="card" />
           </div>
         </div>
 
-        <!-- Recebendo -->
         <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-5">
           <h3 class="font-display font-bold text-sm uppercase tracking-widest text-orange-500 mb-4">
             Você quer ({{ receiving.size }})
           </h3>
           <div class="grid grid-cols-3 gap-3">
-            <CardTile
-              v-for="card in cardsStore.allCards.filter(c => receiving.has(c.id))"
-              :key="card.id"
-              :card="card"
-            />
+            <CardTile v-for="card in cardsStore.allCards.filter(c => receiving.has(c.id))" :key="card.id"
+              :card="card" />
           </div>
         </div>
 
@@ -301,12 +250,7 @@ async function handleSubmit() {
           <ChevronLeft :size="16" />
           Voltar
         </AppButton>
-        <AppButton
-          variant="primary"
-          size="lg"
-          :loading="submitting"
-          @click="handleSubmit"
-        >
+        <AppButton variant="primary" size="lg" :loading="submitting" @click="handleSubmit">
           Publicar Troca
         </AppButton>
       </div>

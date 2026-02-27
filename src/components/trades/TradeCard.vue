@@ -41,7 +41,7 @@ async function handleDelete() {
 <template>
   <div class="bg-zinc-800 border border-zinc-700 rounded-xl overflow-hidden hover:border-zinc-600 transition-all">
 
-    <!-- Header -->
+
     <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-700">
       <div class="flex items-center gap-2">
         <Repeat2 :size="16" class="text-orange-500" />
@@ -65,10 +65,10 @@ async function handleDelete() {
       </div>
     </div>
 
-    <!-- Preview -->
+
     <div class="flex items-center gap-4 px-5 py-4">
 
-      <!-- Oferecendo -->
+
       <div class="flex-1 min-w-0">
         <span class="font-display font-bold text-xs uppercase tracking-widest text-green-500 block mb-2">
           Oferece
@@ -83,10 +83,10 @@ async function handleDelete() {
         </div>
       </div>
 
-      <!-- Seta -->
+
       <Repeat2 :size="20" class="text-zinc-600 shrink-0" />
 
-      <!-- Quer receber -->
+
       <div class="flex-1 min-w-0">
         <span class="font-display font-bold text-xs uppercase tracking-widest text-orange-500 block mb-2">
           Quer
@@ -103,7 +103,7 @@ async function handleDelete() {
 
     </div>
 
-    <!-- Detalhes expandidos -->
+
     <div v-if="expanded" class="border-t border-zinc-700 px-5 py-4 grid grid-cols-2 gap-6">
 
       <div>

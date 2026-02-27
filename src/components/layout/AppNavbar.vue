@@ -25,12 +25,12 @@ function closeMenu() {
   <header class="sticky top-0 z-50 bg-zinc-800 border-b border-zinc-700 shadow-sm">
     <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
-      <!-- Brand -->
+
       <RouterLink to="/" class="flex items-center shrink-0" @click="closeMenu">
         <img src="/logo.png" alt="Trocarta" class="w-32 h-auto" />
       </RouterLink>
 
-      <!-- Links desktop -->
+
       <div class="hidden md:flex items-center gap-1 flex-1 ml-6">
         <RouterLink to="/"
           class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
@@ -56,7 +56,7 @@ function closeMenu() {
         </template>
       </div>
 
-      <!-- Auth desktop -->
+
       <div class="hidden md:flex items-center gap-3 shrink-0">
         <template v-if="auth.isAuthenticated">
           <span class="font-display font-bold text-base tracking-wide text-white max-w-30 truncate">
@@ -80,7 +80,7 @@ function closeMenu() {
         </template>
       </div>
 
-      <!-- Botão hamburguer mobile -->
+
       <button :aria-label="menuOpen ? 'Fechar menu' : 'Abrir menu'" :aria-expanded="menuOpen"
         class="md:hidden flex items-center justify-center w-9 h-9 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
         @click="menuOpen = !menuOpen">
@@ -90,7 +90,7 @@ function closeMenu() {
 
     </nav>
 
-    <!-- Menu mobile -->
+
     <div v-if="menuOpen" class="md:hidden border-t border-zinc-700 bg-zinc-800 px-6 py-4 flex flex-col gap-2">
       <RouterLink to="/"
         class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
