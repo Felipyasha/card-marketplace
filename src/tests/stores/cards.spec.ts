@@ -54,7 +54,7 @@ describe("useCardsStore", () => {
         await cards.fetchAllCards(1);
 
         expect(cards.allCards).toHaveLength(2);
-        expect(cards.allCards[0].name).toBe("Card A");
+        expect(cards.allCards.at(0).name).toBe("Card A");
     });
 
     it("carrega minhas cartas", async () => {
@@ -65,7 +65,7 @@ describe("useCardsStore", () => {
         await cards.fetchMyCards();
 
         expect(cards.myCards).toHaveLength(2);
-        expect(cards.myCards[1].name).toBe("Card B");
+        expect(cards.myCards.at(1).name).toBe("Card B");
     });
 
     it("adiciona cartas à coleção", async () => {
