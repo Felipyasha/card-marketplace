@@ -34,7 +34,7 @@ function closeMenu() {
       <div class="hidden md:flex items-center gap-1 flex-1 ml-6">
         <RouterLink to="/"
           class="flex items-center gap-1.5 px-3 py-1.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
-          active-class="text-orange-500 bg-zinc-700" @click="closeMenu">
+          exactActiveClass="text-orange-500 bg-zinc-700" @click="closeMenu">
           <Store :size="16" />
           Marketplace
         </RouterLink>
@@ -94,7 +94,7 @@ function closeMenu() {
     <div v-if="menuOpen" class="md:hidden border-t border-zinc-700 bg-zinc-800 px-6 py-4 flex flex-col gap-2">
       <RouterLink to="/"
         class="flex items-center gap-2 px-3 py-2.5 rounded text-base font-display font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
-        active-class="text-orange-500 bg-zinc-700" @click="closeMenu">
+        exactActiveClass="text-orange-500 bg-zinc-700" @click="closeMenu">
         <Store :size="16" />
         Marketplace
       </RouterLink>
