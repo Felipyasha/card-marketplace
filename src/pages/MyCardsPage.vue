@@ -173,7 +173,6 @@ function switchTab(newTab: Tab) {
         </div>
       </div>
 
-      >
       <div>
 
         <div v-if="cardsStore.allCardsLoading && cardsStore.allCards.length === 0" class="flex justify-center py-24">
