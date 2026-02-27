@@ -44,7 +44,7 @@ describe("useTradesStore", () => {
         await trades.fetchTrades(1);
 
         expect(trades.trades).toHaveLength(1);
-        expect(trades.trades.at(0)?.user.name).toBe("Fulano");
+        expect(trades.trades[0]?.user.name).toBe("Fulano");
     });
 
     it("cria uma trade", async () => {
