@@ -42,7 +42,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="w-full max-w-md">
             <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-8">
 
-                <!-- Header -->
+
                 <div class="text-center mb-8">
                     <div
                         class="inline-flex items-center justify-center p-3 bg-orange-600/10 border border-orange-600/20 rounded-full mb-4">
@@ -52,14 +52,14 @@ const onSubmit = handleSubmit(async (values) => {
                     <p class="text-zinc-400 mt-1">Acesse sua conta Trocarta</p>
                 </div>
 
-                <!-- Erro geral da API -->
+
                 <div v-if="formError"
                     class="flex items-center gap-2 bg-red-400/10 border border-red-400/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-5">
 
                     <span>{{ formError }}</span>
                 </div>
 
-                <!-- Form -->
+
                 <form @submit.prevent="onSubmit" class="flex flex-col gap-5">
                     <AppInput v-model="email" v-bind="emailAttrs" label="E-mail" type="email"
                         placeholder="voce@email.com" :error="errors.email" />
@@ -71,7 +71,7 @@ const onSubmit = handleSubmit(async (values) => {
                     </AppButton>
                 </form>
 
-                <!-- Footer -->
+
                 <p class="text-center text-zinc-400 mt-6">
                     Não tem uma conta?
                     <RouterLink to="/register"

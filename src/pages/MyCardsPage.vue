@@ -74,7 +74,7 @@ function switchTab(newTab: Tab) {
 <template>
   <div>
 
-    <!-- Header -->
+
     <div class="flex items-center gap-4 mb-8">
       <div class="flex items-center justify-center w-12 h-12 bg-orange-600/10 border border-orange-600/20 rounded-xl">
         <Layers :size="22" class="text-orange-500" />
@@ -89,7 +89,7 @@ function switchTab(newTab: Tab) {
       </div>
     </div>
 
-    <!-- Tabs -->
+
     <div class="flex border-b border-zinc-700 mb-6">
       <button @click="switchTab('collection')" :class="[
         'flex items-center gap-2 px-4 py-3 font-display font-bold text-sm tracking-wider border-b-2 transition-all',
@@ -111,7 +111,7 @@ function switchTab(newTab: Tab) {
       </button>
     </div>
 
-    <!-- Search -->
+
     <div class="relative mb-6">
       <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
       <input v-model="search" type="text"
@@ -119,18 +119,18 @@ function switchTab(newTab: Tab) {
         class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
     </div>
 
-    <!-- Aba: Minhas Cartas -->
+
     <template v-if="tab === 'collection'">
 
-      <!-- Loading -->
+
       <div v-if="cardsStore.myCardsLoading" class="flex justify-center py-24">
         <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
       </div>
-      
-      <!-- Vazio -->
+
+
       <div v-else-if="filteredMyCards.length === 0" class="flex flex-col items-center py-24 gap-4">
 
-        <!-- Coleção vazia -->
+
         <template v-if="!search">
           <PackageOpen :size="64" class="text-zinc-600" />
           <p class="text-zinc-400 font-display text-lg">Sua coleção está vazia.</p>
@@ -139,7 +139,7 @@ function switchTab(newTab: Tab) {
           </AppButton>
         </template>
 
-        <!-- Busca sem resultado -->
+
         <template v-else>
           <SearchX :size="64" class="text-zinc-600" />
           <p class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</p>
@@ -147,17 +147,17 @@ function switchTab(newTab: Tab) {
 
       </div>
 
-      <!-- Grid -->
+
       <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         <CardTile v-for="card in filteredMyCards" :key="card.id" :card="card" />
       </div>
 
     </template>
 
-    <!-- Aba: Adicionar Cartas -->
+
     <template v-if="tab === 'browse'">
 
-      <!-- Barra de seleção -->
+
       <div v-if="selectedToAdd.size > 0"
         class="flex items-center justify-between bg-zinc-800 border border-orange-500/30 rounded-lg px-4 py-3 mb-4">
         <span class="font-display font-bold text-orange-500">
@@ -173,27 +173,27 @@ function switchTab(newTab: Tab) {
         </div>
       </div>
 
-      <!-- Loading, Vazio e Grid num mesmo bloco -->
+      >
       <div>
-        <!-- Loading -->
+
         <div v-if="cardsStore.allCardsLoading && cardsStore.allCards.length === 0" class="flex justify-center py-24">
           <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
         </div>
 
-        <!-- Vazio -->
+
         <div v-else-if="filteredAllCards.length === 0" class="flex flex-col items-center py-24 gap-4">
           <SearchX :size="64" class="text-zinc-600" />
           <p class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</p>
         </div>
 
-        <!-- Grid -->
+
         <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           <CardTile v-for="card in filteredAllCards" :key="card.id" :card="card" :selectable="true"
             :selected="selectedToAdd.has(card.id)" @select="toggleSelect(card.id)" />
         </div>
       </div>
 
-      <!-- Load more -->
+
       <div v-if="cardsStore.allCardsMore" class="flex justify-center mt-6">
         <AppButton variant="ghost" :loading="cardsStore.allCardsLoading" @click="cardsStore.fetchMoreCards()">
           Carregar mais
