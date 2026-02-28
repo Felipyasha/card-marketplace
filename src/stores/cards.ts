@@ -51,6 +51,28 @@ export const useCardsStore = defineStore("cards", () => {
         await fetchMyCards();
     }
 
+    async function fetchAllCardsAtOnce() {
+        if (allCardsLoading.value) return;
+        allCardsLoading.value = true;
+        try {
+            let page = 1;
+            let hasMore = true;
+            const result: Card[] = [];
+
+            while (hasMore) {
+                const data = await cardsApi.getAll(page, 50);
+                result.push(...data.list);
+                hasMore = data.more;
+                page++;
+            }
+
+            allCards.value = result;
+            allCardsMore.value = false;
+        } finally {
+            allCardsLoading.value = false;
+        }
+    }
+
     return {
         allCards,
         allCardsPage,
@@ -62,5 +84,6 @@ export const useCardsStore = defineStore("cards", () => {
         fetchMoreCards,
         fetchMyCards,
         addCardsToMyCollection,
+        fetchAllCardsAtOnce,
     };
 });

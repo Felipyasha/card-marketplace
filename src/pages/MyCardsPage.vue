@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useCardsStore } from '@/stores/cards'
 import { toast } from 'vue-sonner'
-import { Search, Plus, Layers, PackageOpen, SearchX } from 'lucide-vue-next'
+import { Search, Plus, Layers, PackageOpen, SearchX, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import AppButton from '@/components/ui/AppButton.vue'
 import CardTile from '@/components/cards/CardTile.vue'
 import { useDebounce } from '@/composables/useDebounce'
 
 type Tab = 'collection' | 'browse'
+
+const CARDS_PER_PAGE = 12
 
 const cardsStore = useCardsStore()
 const tab = ref<Tab>('collection')
@@ -15,11 +17,13 @@ const search = ref('')
 const debouncedSearch = useDebounce(search, 300)
 const selectedToAdd = ref<Set<string>>(new Set())
 const adding = ref(false)
+const currentPage = ref(1)
+const currentPageMy = ref(1)
 
 onMounted(async () => {
   try {
     await cardsStore.fetchMyCards()
-    await cardsStore.fetchAllCards(1)
+    await cardsStore.fetchAllCardsAtOnce()
   } catch {
     toast.error('Erro ao carregar cartas')
   }
@@ -42,6 +46,51 @@ const filteredAllCards = computed(() =>
     c.name.toLowerCase().includes(debouncedSearch.value.toLowerCase())
   )
 )
+
+const totalPages = computed(() =>
+  Math.ceil(filteredAllCards.value.length / CARDS_PER_PAGE)
+)
+
+const totalPagesMy = computed(() =>
+  Math.ceil(filteredMyCards.value.length / CARDS_PER_PAGE)
+)
+
+const paginatedAllCards = computed(() => {
+  const start = (currentPage.value - 1) * CARDS_PER_PAGE
+  return filteredAllCards.value.slice(start, start + CARDS_PER_PAGE)
+})
+
+const paginatedMyCards = computed(() => {
+  const start = (currentPageMy.value - 1) * CARDS_PER_PAGE
+  return filteredMyCards.value.slice(start, start + CARDS_PER_PAGE)
+})
+
+const visiblePages = computed(() => {
+  const pages: number[] = []
+  const total = totalPages.value
+  const current = currentPage.value
+  let start = Math.max(1, current - 2)
+  let end = Math.min(total, start + 4)
+  if (end - start < 4) start = Math.max(1, end - 4)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+const visiblePagesMy = computed(() => {
+  const pages: number[] = []
+  const total = totalPagesMy.value
+  const current = currentPageMy.value
+  let start = Math.max(1, current - 2)
+  let end = Math.min(total, start + 4)
+  if (end - start < 4) start = Math.max(1, end - 4)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+watch(debouncedSearch, () => {
+  currentPage.value = 1
+  currentPageMy.value = 1
+})
 
 function toggleSelect(id: string) {
   const next = new Set(selectedToAdd.value)
@@ -68,14 +117,15 @@ function switchTab(newTab: Tab) {
   tab.value = newTab
   search.value = ''
   selectedToAdd.value = new Set()
+  currentPage.value = 1
+  currentPageMy.value = 1
 }
 </script>
 
 <template>
-  <div>
+  <div class="overflow-x-hidden">
 
-
-    <div class="flex items-center gap-4 mb-8">
+    <div class="flex items-center gap-4 mb-4">
       <div class="flex items-center justify-center w-12 h-12 bg-orange-600/10 border border-orange-600/20 rounded-xl">
         <Layers :size="22" class="text-orange-500" />
       </div>
@@ -89,8 +139,7 @@ function switchTab(newTab: Tab) {
       </div>
     </div>
 
-
-    <div class="flex border-b border-zinc-700 mb-6">
+    <div class="flex border-b border-zinc-700 mb-3">
       <button @click="switchTab('collection')" :class="[
         'flex items-center gap-2 px-4 py-3 font-display font-bold text-sm tracking-wider border-b-2 transition-all',
         tab === 'collection'
@@ -111,26 +160,21 @@ function switchTab(newTab: Tab) {
       </button>
     </div>
 
-
-    <div class="relative mb-6">
-      <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+    <div class="relative mb-3">
+      <Search :size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
       <input v-model="search" type="text"
         :placeholder="tab === 'collection' ? 'Buscar nas minhas cartas...' : 'Buscar cartas...'"
-        class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
     </div>
 
-
+    <!-- Aba: Minhas Cartas -->
     <template v-if="tab === 'collection'">
-
 
       <div v-if="cardsStore.myCardsLoading" class="flex justify-center py-24">
         <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
       </div>
 
-
       <div v-else-if="filteredMyCards.length === 0" class="flex flex-col items-center py-24 gap-4">
-
-
         <template v-if="!search">
           <PackageOpen :size="64" class="text-zinc-600" />
           <p class="text-zinc-400 font-display text-lg">Sua coleção está vazia.</p>
@@ -138,29 +182,57 @@ function switchTab(newTab: Tab) {
             Adicionar Cartas
           </AppButton>
         </template>
-
-
         <template v-else>
           <SearchX :size="64" class="text-zinc-600" />
           <p class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</p>
         </template>
-
       </div>
 
+      <template v-else>
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+          <CardTile v-for="card in paginatedMyCards" :key="card.id" :card="card" />
+        </div>
 
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        <CardTile v-for="card in filteredMyCards" :key="card.id" :card="card" />
-      </div>
+        <div v-if="totalPagesMy > 1" class="flex items-center justify-center gap-1 mt-3 flex-wrap">
+          <button @click="currentPageMy--" :disabled="currentPageMy === 1"
+            class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronLeft :size="14" />
+          </button>
+
+          <span v-if="(visiblePagesMy.at(0) ?? 1) > 1" class="flex items-center gap-1">
+            <button @click="currentPageMy = 1"
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">1</button>
+            <span v-if="(visiblePagesMy.at(0) ?? 1) > 2" class="text-zinc-600 px-1">...</span>
+          </span>
+
+          <button v-for="page in visiblePagesMy" :key="page" @click="currentPageMy = page" :class="[
+            'w-8 h-8 rounded font-display font-bold text-sm transition-all',
+            currentPageMy === page ? 'bg-orange-600 text-white' : 'border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700'
+          ]">{{ page }}</button>
+
+          <span v-if="(visiblePagesMy.at(-1) ?? totalPagesMy) < totalPagesMy" class="flex items-center gap-1">
+            <span v-if="(visiblePagesMy.at(-1) ?? totalPagesMy) < totalPagesMy - 1"
+              class="text-zinc-600 px-1">...</span>
+            <button @click="currentPageMy = totalPagesMy"
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{
+              totalPagesMy }}</button>
+          </span>
+
+          <button @click="currentPageMy++" :disabled="currentPageMy === totalPagesMy"
+            class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronRight :size="14" />
+          </button>
+        </div>
+      </template>
 
     </template>
 
-
+    <!-- Aba: Adicionar Cartas -->
     <template v-if="tab === 'browse'">
 
-
       <div v-if="selectedToAdd.size > 0"
-        class="flex items-center justify-between bg-zinc-800 border border-orange-500/30 rounded-lg px-4 py-3 mb-4">
-        <span class="font-display font-bold text-orange-500">
+        class="flex items-center justify-between bg-zinc-800 border border-orange-500/30 rounded-lg px-4 py-2 mb-3">
+        <span class="font-display font-bold text-sm text-orange-500">
           {{ selectedToAdd.size }} carta(s) selecionada(s)
         </span>
         <div class="flex gap-2">
@@ -173,31 +245,59 @@ function switchTab(newTab: Tab) {
         </div>
       </div>
 
-      <div>
+      <div v-if="cardsStore.allCardsLoading && cardsStore.allCards.length === 0" class="flex justify-center py-24">
+        <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
+      </div>
 
-        <div v-if="cardsStore.allCardsLoading && cardsStore.allCards.length === 0" class="flex justify-center py-24">
-          <div class="w-8 h-8 border-2 border-zinc-700 border-t-orange-500 rounded-full animate-spin" />
-        </div>
+      <div v-else-if="filteredAllCards.length === 0" class="flex flex-col items-center py-24 gap-4">
+        <SearchX :size="64" class="text-zinc-600" />
+        <p class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</p>
+      </div>
 
-
-        <div v-else-if="filteredAllCards.length === 0" class="flex flex-col items-center py-24 gap-4">
-          <SearchX :size="64" class="text-zinc-600" />
-          <p class="text-zinc-400 font-display text-lg">Nenhuma carta encontrada.</p>
-        </div>
-
-
-        <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          <CardTile v-for="card in filteredAllCards" :key="card.id" :card="card" :selectable="true"
+      <template v-else>
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+          <CardTile v-for="card in paginatedAllCards" :key="card.id" :card="card" :selectable="true"
             :selected="selectedToAdd.has(card.id)" @select="toggleSelect(card.id)" />
         </div>
-      </div>
 
+        <!-- Paginação -->
+        <div v-if="totalPages > 1" class="flex items-center justify-center gap-1 mt-3 flex-wrap">
+          <button @click="currentPage--" :disabled="currentPage === 1"
+            class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronLeft :size="14" />
+          </button>
 
-      <div v-if="cardsStore.allCardsMore" class="flex justify-center mt-6">
-        <AppButton variant="ghost" :loading="cardsStore.allCardsLoading" @click="cardsStore.fetchMoreCards()">
-          Carregar mais
-        </AppButton>
-      </div>
+          <span v-if="(visiblePages.at(0) ?? 1) > 1" class="flex items-center gap-1">
+            <button @click="currentPage = 1"
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">
+              1
+            </button>
+            <span v-if="(visiblePages.at(0) ?? 1) > 2" class="text-zinc-600 px-1">...</span>
+          </span>
+
+          <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
+            'w-8 h-8 rounded font-display font-bold text-sm transition-all',
+            currentPage === page
+              ? 'bg-orange-600 text-white'
+              : 'border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700'
+          ]">
+            {{ page }}
+          </button>
+
+          <span v-if="(visiblePages.at(-1) ?? totalPages) < totalPages" class="flex items-center gap-1">
+            <span v-if="(visiblePages.at(-1) ?? totalPages) < totalPages - 1" class="text-zinc-600 px-1">...</span>
+            <button @click="currentPage = totalPages"
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">
+              {{ totalPages }}
+            </button>
+          </span>
+
+          <button @click="currentPage++" :disabled="currentPage === totalPages"
+            class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronRight :size="14" />
+          </button>
+        </div>
+      </template>
 
     </template>
 
