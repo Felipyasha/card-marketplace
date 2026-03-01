@@ -113,13 +113,13 @@ O projeto conta com 43 testes unitários cobrindo:
 
 **Zod v3** foi utilizado no lugar do v4 por compatibilidade com o `@vee-validate/zod`.
 
-**Cache:** foi implementado cache com TTL (Time To Live) de 60 segundos na store de cartas (`src/stores/cards.ts`). Ao listar as cartas do sistema (catálogo geral), as requisições à API só são feitas quando o cache expira ou quando os dados são forçados a atualizar, reduzindo chamadas desnecessárias e melhorando a resposta ao navegar entre telas que usam o mesmo catálogo. As listagens de trocas não utilizam cache, pois as ofertas mudam com frequência e o usuário deve ver sempre o estado mais recente do marketplace.
+**Cache** foi implementado cache com TTL (Time To Live) de 60 segundos na store de cartas (`src/stores/cards.ts`). Ao listar as cartas do sistema (catálogo geral), as requisições à API só são feitas quando o cache expira ou quando os dados são forçados a atualizar, reduzindo chamadas desnecessárias e melhorando a resposta ao navegar entre telas que usam o mesmo catálogo. As listagens de trocas não utilizam cache, pois as ofertas mudam com frequência e o usuário deve ver sempre o estado mais recente do marketplace.
 
 **ApiError customizado** foi criado para preservar o status HTTP e o payload original dos erros, facilitando o tratamento de erros específicos no futuro.
 
 **Debounce nos campos de busca** foi implementado via composable reutilizável para evitar filtragens excessivas durante a digitação.
 
-**Cartas a receber na Nova Troca:** na etapa "O que você quer receber?", a lista exibe apenas cartas que o usuário ainda não possui. A API permite escolher entre todas as cartas registradas; optei por filtrar as que já estão na coleção para evitar trocas por cartas duplicadas e tornar o fluxo mais intuitivo.
+**Cartas a receber na Nova Troca** na etapa "O que você quer receber?", a lista exibe apenas cartas que o usuário ainda não possui. A API permite escolher entre todas as cartas registradas, optei por filtrar as que já estão na coleção para evitar trocas por cartas duplicadas e tornar o fluxo mais intuitivo.
 
 ## Limitações conhecidas
 
