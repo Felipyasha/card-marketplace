@@ -167,7 +167,6 @@ function switchTab(newTab: Tab) {
         class="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-all" />
     </div>
 
-    <!-- Aba: Minhas Cartas -->
     <template v-if="tab === 'collection'">
 
       <div v-if="cardsStore.myCardsLoading" class="flex justify-center py-24">
@@ -215,7 +214,7 @@ function switchTab(newTab: Tab) {
               class="text-zinc-600 px-1">...</span>
             <button @click="currentPageMy = totalPagesMy"
               class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{
-              totalPagesMy }}</button>
+                totalPagesMy }}</button>
           </span>
 
           <button @click="currentPageMy++" :disabled="currentPageMy === totalPagesMy"
@@ -227,7 +226,6 @@ function switchTab(newTab: Tab) {
 
     </template>
 
-    <!-- Aba: Adicionar Cartas -->
     <template v-if="tab === 'browse'">
 
       <div v-if="selectedToAdd.size > 0"
@@ -260,7 +258,6 @@ function switchTab(newTab: Tab) {
             :selected="selectedToAdd.has(card.id)" @select="toggleSelect(card.id)" />
         </div>
 
-        <!-- Paginação -->
         <div v-if="totalPages > 1" class="flex items-center justify-center gap-1 mt-3 flex-wrap">
           <button @click="currentPage--" :disabled="currentPage === 1"
             class="flex items-center justify-center w-8 h-8 rounded border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
