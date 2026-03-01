@@ -44,16 +44,7 @@ onMounted(async () => {
     </div>
 
 
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-        <span class="font-display font-bold text-2xl text-orange-500">
-          {{ tradesStore.trades.length }}
-        </span>
-        <span class="text-zinc-400 text-sm uppercase tracking-widest font-display">
-          trocas abertas
-        </span>
-      </div>
-
+    <div class="flex items-center justify-end mb-6">
       <button @click="tradesStore.fetchTrades(1)" :disabled="tradesStore.loading"
         class="flex items-center gap-2 text-sm font-display font-bold text-zinc-400 border border-zinc-700 px-3 py-1.5 rounded hover:text-white hover:bg-zinc-700 transition-all disabled:opacity-50">
         <RefreshCw :size="14" :class="tradesStore.loading ? 'animate-spin' : ''" />
