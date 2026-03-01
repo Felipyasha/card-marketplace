@@ -169,7 +169,7 @@ async function handleSubmit() {
       </div>
     </div>
 
-    <!-- Step 1 -->
+
     <div v-if="step === 1">
       <div class="mb-3">
         <h2 class="font-display font-bold text-xl text-white mb-1">
@@ -218,10 +218,13 @@ async function handleSubmit() {
             pageOffering === page ? 'bg-orange-600 text-white' : 'border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700'
           ]">{{ page }}</button>
 
-          <span v-if="(visiblePagesOffering.at(-1) ?? totalPagesOffering) < totalPagesOffering" class="flex items-center gap-1">
-            <span v-if="(visiblePagesOffering.at(-1) ?? totalPagesOffering) < totalPagesOffering - 1" class="text-zinc-600 px-1">...</span>
+          <span v-if="(visiblePagesOffering.at(-1) ?? totalPagesOffering) < totalPagesOffering"
+            class="flex items-center gap-1">
+            <span v-if="(visiblePagesOffering.at(-1) ?? totalPagesOffering) < totalPagesOffering - 1"
+              class="text-zinc-600 px-1">...</span>
             <button @click="pageOffering = totalPagesOffering"
-              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{ totalPagesOffering }}</button>
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{
+                totalPagesOffering }}</button>
           </span>
 
           <button @click="pageOffering++" :disabled="pageOffering === totalPagesOffering"
@@ -239,7 +242,6 @@ async function handleSubmit() {
       </div>
     </div>
 
-    <!-- Step 2 -->
     <div v-if="step === 2">
       <div class="mb-3">
         <h2 class="font-display font-bold text-xl text-white mb-1">
@@ -288,10 +290,13 @@ async function handleSubmit() {
             pageReceiving === page ? 'bg-orange-600 text-white' : 'border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700'
           ]">{{ page }}</button>
 
-          <span v-if="(visiblePagesReceiving.at(-1) ?? totalPagesReceiving) < totalPagesReceiving" class="flex items-center gap-1">
-            <span v-if="(visiblePagesReceiving.at(-1) ?? totalPagesReceiving) < totalPagesReceiving - 1" class="text-zinc-600 px-1">...</span>
+          <span v-if="(visiblePagesReceiving.at(-1) ?? totalPagesReceiving) < totalPagesReceiving"
+            class="flex items-center gap-1">
+            <span v-if="(visiblePagesReceiving.at(-1) ?? totalPagesReceiving) < totalPagesReceiving - 1"
+              class="text-zinc-600 px-1">...</span>
             <button @click="pageReceiving = totalPagesReceiving"
-              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{ totalPagesReceiving }}</button>
+              class="w-8 h-8 rounded font-display font-bold text-sm border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all">{{
+                totalPagesReceiving }}</button>
           </span>
 
           <button @click="pageReceiving++" :disabled="pageReceiving === totalPagesReceiving"
@@ -313,7 +318,6 @@ async function handleSubmit() {
       </div>
     </div>
 
-    <!-- Step 3 -->
     <div v-if="step === 3">
       <div class="mb-6">
         <h2 class="font-display font-bold text-xl text-white mb-1">Revisar Troca</h2>
@@ -335,7 +339,8 @@ async function handleSubmit() {
             Você quer ({{ receiving.size }})
           </h3>
           <div class="grid grid-cols-3 gap-3">
-            <CardTile v-for="card in cardsStore.allCards.filter(c => receiving.has(c.id))" :key="card.id" :card="card" />
+            <CardTile v-for="card in cardsStore.allCards.filter(c => receiving.has(c.id))" :key="card.id"
+              :card="card" />
           </div>
         </div>
       </div>
